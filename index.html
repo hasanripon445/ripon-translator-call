@@ -42,7 +42,7 @@ select,textarea,input{width:100%;border:1px solid var(--line);border-radius:12px
 .note{font-size:12px;color:var(--muted);line-height:1.6}
 .hidden{display:none!important}
 .videos{position:relative;background:#0b1b2b;border-radius:14px;overflow:hidden;margin-bottom:10px}
-#remoteVideo{width:100%;height:300px;object-fit:cover;display:block;background:#0b1b2b}
+#remoteVideo{width:100%;height:280px;object-fit:cover;display:block;background:#0b1b2b}
 #localVideo{position:absolute;right:8px;bottom:8px;width:110px;height:150px;object-fit:cover;border:2px solid #fff;border-radius:12px;background:#222}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}
 .box{background:#fff;border-radius:18px;padding:22px;width:100%;max-width:340px;text-align:center}
@@ -53,11 +53,10 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
 <body>
 <header>
   <h1>🎧 Ripon AI Translator</h1>
-  <div class="sub">কল করুন, কথা বলুন, আর প্রত্যেকে নিজের ভাষায় শুনুন।</div>
+  <div class="sub">কল করুন বা কথা বলুন, প্রত্যেকে নিজের ভাষায় ও নিজের সুরে শুনুন।</div>
 </header>
 <main>
 
-  <!-- সংযোগ -->
   <section class="card">
     <div class="row" style="margin-top:0;align-items:center;justify-content:space-between">
       <b style="font-size:14px">সংযোগ</b>
@@ -76,7 +75,6 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
     <div class="status" id="statusBox" aria-live="polite">প্রথমে একজন রুম তৈরি করুন, অন্যজন কোড লিখে যুক্ত হোন।</div>
   </section>
 
-  <!-- কল -->
   <section class="card">
     <b style="font-size:14px">কল</b>
     <div class="row">
@@ -93,10 +91,13 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
         <button class="btn secondary" id="camBtn">📷 ক্যামেরা বন্ধ</button>
         <button class="btn danger" id="endBtn">❌ কল শেষ</button>
       </div>
+      <div class="row">
+        <button class="btn secondary" id="callTransBtn" disabled>🌐 কল অনুবাদ: বন্ধ</button>
+      </div>
+      <p class="note" style="margin:8px 0 0">কল অনুবাদ চালু হলে মূল কণ্ঠ বন্ধ থাকবে এবং অপর জন আপনার সুরে অনুবাদিত কথা শুনবেন। ইয়ারফোন ব্যবহার করুন, নাহলে নিজের শোনা কথা আবার ধরা পড়তে পারে।</p>
     </div>
   </section>
 
-  <!-- ভাষা ও কথা -->
   <section class="card">
     <label for="myLang">আমার ভাষা</label>
     <select id="myLang"></select>
@@ -109,7 +110,6 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
     <label class="toggle"><input type="checkbox" id="autoSpeak" checked> অনুবাদ নিজে থেকে শুনুন</label>
   </section>
 
-  <!-- কথোপকথন -->
   <section class="card">
     <div class="row" style="margin:0 0 10px;align-items:center;justify-content:space-between">
       <b style="font-size:14px">কথোপকথন</b>
@@ -120,12 +120,11 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
 
   <section class="card">
     <b style="font-size:14px">ব্যবহারের নিয়ম</b>
-    <p class="note">১. একজন রুম তৈরি করে কোড দিন, অন্যজন কোড লিখে যুক্ত হোন। ২. দুজনেই নিজের ভাষা বাছুন। ৩. কল বোতামে অডিও বা ভিডিও কল করুন। ৪. অনুবাদের জন্য মাইক্রোফোন বোতাম ব্যবহার করুন।</p>
-    <p class="note">কল ও অনুবাদ একসাথে চললে কিছু ফোনে মাইক্রোফোন ভাগাভাগিতে সমস্যা হতে পারে। সেক্ষেত্রে কল চলাকালীন অনুবাদের বোতাম কম ব্যবহার করুন। মাইক্রোফোন ও ক্যামেরার জন্য HTTPS ও অনুমতি লাগবে।</p>
+    <p class="note">১. একজন রুম তৈরি করে কোড দিন, অন্যজন কোড লিখে যুক্ত হোন। ২. দুজনেই নিজের ভাষা বাছুন। ৩. চ্যাটে বা কলে কথা বললে অপর জন আপনার সুর অনুযায়ী অনুবাদ শুনবেন।</p>
+    <p class="note">সুর মাপতে মাইক্রোফোন ব্যবহার হয়। কিছু ফোনে কথা শনাক্তকরণ ও মাইক্রোফোন একসাথে চললে সমস্যা হতে পারে। সেক্ষেত্রে একবারে একটি মাধ্যম ব্যবহার করুন।</p>
   </section>
 </main>
 
-<!-- ইনকামিং কল -->
 <div id="incoming" class="overlay hidden">
   <div class="box">
     <h3 id="incomingText">কল আসছে</h3>
@@ -136,15 +135,13 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
   </div>
 </div>
 
-<footer>Ripon AI Translator · Version 4.0</footer>
+<footer>Ripon AI Translator · Version 5.0</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 /* ================= সেটিংস ================= */
-const GOOGLE_KEY='';   // ঐচ্ছিক। ফাঁকা রাখলে বিনামূল্যের MyMemory ব্যবহার হবে।
+const GOOGLE_KEY='';  // ঐচ্ছিক। ফাঁকা রাখলে বিনামূল্যের পথ ব্যবহার হবে।
 
-// কল সরাসরি না হলে (কিছু মোবাইল নেটওয়ার্কে) TURN সার্ভার লাগে।
-// নিচের লাইনটি সক্রিয় করে নিজের TURN তথ্য বসাতে পারেন।
 const PEER_OPTIONS={config:{iceServers:[
   {urls:'stun:stun.l.google.com:19302'},
   {urls:'stun:stun1.l.google.com:19302'}
@@ -156,18 +153,84 @@ const LANGS=[
 
 const LOCALE={bn:'bn-BD',en:'en-US',hi:'hi-IN',ur:'ur-PK',ar:'ar-SA',zh:'zh-CN',ja:'ja-JP',ko:'ko-KR',fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-PT',ru:'ru-RU',tr:'tr-TR',it:'it-IT',th:'th-TH',id:'id-ID',ne:'ne-NP',fa:'fa-IR',ml:'ml-IN',ta:'ta-IN',te:'te-IN',gu:'gu-IN',pa:'pa-IN',my:'my-MM',vi:'vi-VN',nl:'nl-NL',pl:'pl-PL',uk:'uk-UA',he:'he-IL'};
 
+const SCRIPT_RE={bn:/[\u0980-\u09FF]/,hi:/[\u0900-\u097F]/,ne:/[\u0900-\u097F]/,ur:/[\u0600-\u06FF]/,ar:/[\u0600-\u06FF]/,fa:/[\u0600-\u06FF]/,he:/[\u0590-\u05FF]/,zh:/[\u4E00-\u9FFF]/,ja:/[\u3040-\u30FF\u4E00-\u9FFF]/,ko:/[\uAC00-\uD7AF]/,ru:/[\u0400-\u04FF]/,uk:/[\u0400-\u04FF]/,th:/[\u0E00-\u0E7F]/,ml:/[\u0D00-\u0D7F]/,ta:/[\u0B80-\u0BFF]/,te:/[\u0C00-\u0C7F]/,gu:/[\u0A80-\u0AFF]/,pa:/[\u0A00-\u0A7F]/,my:/[\u1000-\u109F]/};
+const looksRight=(text,to)=>{const re=SCRIPT_RE[to];return !re||re.test(text);};
+
+/* ================= ছোট সাহায্যকারী ================= */
 const $=id=>document.getElementById(id);
 const setStatus=t=>$('statusBox').textContent=t;
 const myLangSel=$('myLang');
 for(const [n,c] of LANGS)myLangSel.add(new Option(n,c));
 myLangSel.value='bn';
-
-let peer=null, conn=null, peerLang='', chatItems=[];
-let localStream=null, currentCall=null, pendingCall=null;
 const myLang=()=>myLangSel.value;
 const langName=code=>{const f=LANGS.find(l=>l[1]===code);return f?f[0]:code;};
 
-/* ================= পিয়ার ও সংযোগ ================= */
+let peer=null, conn=null, peerLang='', chatItems=[];
+let localStream=null, currentCall=null, pendingCall=null;
+let callTranslate=false, callRec=null, callMeter=null;
+let micMeter=null, micStream=null, lastVoice=null;
+
+/* ================= কণ্ঠের সুর মাপা ================= */
+// একটি অডিও নমুনা থেকে মৌলিক সুর (F0, Hz) অনুমান
+function detectPitch(buf,sr){
+  let rms=0;
+  for(const v of buf)rms+=v*v;
+  rms=Math.sqrt(rms/buf.length);
+  if(rms<0.008)return null;
+  const minLag=Math.floor(sr/400), maxLag=Math.floor(sr/70);
+  let best=0,bestLag=-1;
+  for(let lag=minLag;lag<=maxLag;lag++){
+    let c=0;
+    for(let i=0;i+lag<buf.length;i++)c+=buf[i]*buf[i+lag];
+    if(c>best){best=c;bestLag=lag;}
+  }
+  return bestLag>0?sr/bestLag:null;
+}
+
+class VoiceMeter{
+  constructor(stream){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    this.ctx=new AC();
+    const src=this.ctx.createMediaStreamSource(stream);
+    this.analyser=this.ctx.createAnalyser();
+    this.analyser.fftSize=2048;
+    src.connect(this.analyser);
+    this.buf=new Float32Array(this.analyser.fftSize);
+    this.samples=[];
+    this.timer=setInterval(()=>this.sample(),100);
+  }
+  sample(){
+    this.analyser.getFloatTimeDomainData(this.buf);
+    const f0=detectPitch(this.buf,this.ctx.sampleRate);
+    if(f0){this.samples.push(f0);if(this.samples.length>200)this.samples.shift();}
+  }
+  snapshot(){
+    if(this.samples.length<3)return null;
+    const s=[...this.samples].slice(-50).sort((a,b)=>a-b);
+    const f0=s[Math.floor(s.length/2)];
+    return {f0:Math.round(f0),gender:f0<165?'male':'female'};
+  }
+  stop(){
+    clearInterval(this.timer);
+    this.ctx.close().catch(()=>{});
+  }
+}
+
+function startMicMeter(){
+  if(currentCall)return; // কল চললে কলের মাইক্রোফোনই ব্যবহার হবে
+  navigator.mediaDevices.getUserMedia({audio:true})
+    .then(s=>{micStream=s;micMeter=new VoiceMeter(s);})
+    .catch(()=>{micMeter=null;});
+}
+function stopMicMeter(){
+  const v=micMeter?micMeter.snapshot():null;
+  if(micMeter)micMeter.stop();
+  if(micStream)micStream.getTracks().forEach(t=>t.stop());
+  micMeter=null;micStream=null;
+  return v;
+}
+
+/* ================= লিঙ্ক ও সংযোগ ================= */
 const CODE_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const randomCode=()=>Array.from({length:6},()=>CODE_CHARS[Math.floor(Math.random()*CODE_CHARS.length)]).join('');
 const PREFIX='ripon-tr-';
@@ -241,6 +304,221 @@ $('joinBtn').onclick=()=>{
   peer.on('open',()=>attachConn(peer.connect(PREFIX+code,{reliable:true})));
 };
 
+myLangSel.onchange=()=>{
+  if(conn&&conn.open)conn.send({type:'hello',lang:myLang()});
+};
+
+/* ================= অনুবাদ ================= */
+function chunkText(text,max=400){
+  const parts=text.match(/[^.!?।\n]+[.!?।\n]*/g)||[text];
+  const out=[];let cur='';
+  for(const p of parts){
+    if((cur+p).length>max){if(cur)out.push(cur.trim());cur=p;}
+    else cur+=p;
+  }
+  if(cur.trim())out.push(cur.trim());
+  return out.flatMap(s=>s.length>max?(s.match(new RegExp('.{1,'+max+'}','g'))||[s]):[s]);
+}
+
+async function googleTranslate(q,from,to){
+  const r=await fetch('https://translation.googleapis.com/language/translate/v2?key='+GOOGLE_KEY,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({q,source:from,target:to,format:'text'})
+  });
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const d=await r.json();
+  return d.data.translations[0].translatedText;
+}
+
+async function gtxTranslate(q,from,to){
+  const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl='+encodeURIComponent(from)+'&tl='+encodeURIComponent(to)+'&dt=t&q='+encodeURIComponent(q);
+  const r=await fetch(url);
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const d=await r.json();
+  return d[0].map(x=>x[0]).join('');
+}
+
+async function myMemoryTranslate(q,from,to){
+  const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair='+encodeURIComponent(from+'|'+to);
+  const r=await fetch(url);
+  if(!r.ok)throw new Error('network');
+  const d=await r.json();
+  const t=d?.responseData?.translatedText;
+  if(!t||/INVALID|QUERY LENGTH|MYMEMORY WARNING/i.test(t))throw new Error('limit');
+  return t;
+}
+
+async function translateChunk(q,from,to){
+  const errs=[];
+  const providers=[];
+  if(GOOGLE_KEY)providers.push(['Google',()=>googleTranslate(q,from,to)]);
+  providers.push(['Google-web',()=>gtxTranslate(q,from,to)]);
+  providers.push(['MyMemory',()=>myMemoryTranslate(q,from,to)]);
+  for(const [name,fn] of providers){
+    try{
+      const t=await fn();
+      if(looksRight(t,to))return t;
+      errs.push(name+':wrong-script');
+    }catch(e){errs.push(name+':'+e.message);}
+  }
+  throw new Error(errs.join(' | '));
+}
+
+async function translate(text,from,to){
+  if(from===to)return text;
+  const res=[];
+  for(const c of chunkText(text))res.push(await translateChunk(c,from,to));
+  return res.join(' ');
+}
+
+/* ================= কণ্ঠে শোনানো (সুর ও লিঙ্গ অনুযায়ী) ================= */
+const genderOf=name=>{
+  if(/female|woman|girl/i.test(name))return 'female';
+  if(/\bmale\b|\bman\b|\bboy\b/i.test(name))return 'male';
+  return null;
+};
+
+function speak(text,lang,voice){
+  if(!('speechSynthesis'in window)){setStatus('এই ডিভাইসে কণ্ঠে শোনার সুবিধা নেই।');return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  const loc=LOCALE[lang]||lang;
+  u.lang=loc;
+  const voices=speechSynthesis.getVoices();
+  const langVoices=voices.filter(x=>x.lang===loc||x.lang.startsWith(lang));
+  let v=null;
+  if(voice&&voice.gender)v=langVoices.find(x=>genderOf(x.name)===voice.gender)||null;
+  v=v||langVoices[0]||null;
+  if(v)u.voice=v;
+  else if(voices.length)setStatus(langName(lang)+' ভাষার কণ্ঠ এই ফোনে নেই। Google Text-to-Speech ভাষা প্যাক ইনস্টল করুন।');
+  // বক্তার সুর অনুযায়ী পিচ: পুরুষের কণ্ঠ নিচু, মহিলার কণ্ঠ উঁচু
+  if(voice&&voice.f0){
+    u.pitch=Math.min(2,Math.max(0.5,0.8+(voice.f0-80)*0.6/170));
+  }
+  speechSynthesis.speak(u);
+}
+
+/* ================= চ্যাটের বার্তা ================= */
+function addBubble(item){
+  chatItems.push(item);
+  renderChat();
+}
+
+async function sendText(text,voice){
+  if(!conn||!conn.open){setStatus('আগে সংযোগ করুন।');return;}
+  const from=myLang();
+  const v=voice||lastVoice||null;
+  if(v)lastVoice=v;
+  conn.send({type:'msg',orig:text,origLang:from,voice:v});
+  addBubble({who:'me',orig:text,tr:text,origLang:from,trLang:from,voice:v});
+  setStatus('পাঠানো হয়েছে। অপর ব্যক্তি নিজের ভাষায় শুনবেন।');
+}
+
+async function receiveText(orig,origLang,voice){
+  const to=myLang();
+  const item={who:'them',orig,tr:orig,origLang,trLang:to,voice:voice||null};
+  addBubble(item);
+  let tr=orig;
+  if(origLang!==to){
+    setStatus('আপনার ভাষায় অনুবাদ করা হচ্ছে...');
+    try{
+      tr=await translate(orig,origLang,to);
+      setStatus('অনুবাদ সম্পন্ন।');
+    }catch(e){
+      item.failed=true;
+      renderChat();
+      setStatus('অনুবাদ হয়নি: '+e.message);
+      return;
+    }
+  }
+  item.tr=tr;
+  renderChat();
+  if($('autoSpeak').checked)speak(tr,to,voice);
+}
+
+async function retryItem(it){
+  setStatus('আবার অনুবাদ করা হচ্ছে...');
+  try{
+    it.tr=await translate(it.orig,it.origLang,it.trLang);
+    it.failed=false;
+    renderChat();
+    setStatus('অনুবাদ সম্পন্ন।');
+    if($('autoSpeak').checked)speak(it.tr,it.trLang,it.voice);
+  }catch(e){
+    setStatus('অনুবাদ হয়নি: '+e.message);
+  }
+}
+
+function renderChat(){
+  const box=$('chat');
+  box.innerHTML='';
+  if(!chatItems.length){box.innerHTML='<div class="empty">এখনও কোনো কথা নেই।</div>';return;}
+  chatItems.forEach(it=>{
+    const d=document.createElement('div');
+    d.className='bubble '+it.who;
+    const w=document.createElement('div');w.className='who';
+    w.textContent=(it.who==='me'?'আপনি':'অপর ব্যক্তি')+' · '+langName(it.origLang);
+    const tr=document.createElement('div');tr.className='tr';tr.textContent=it.tr;
+    const og=document.createElement('div');og.className='orig';og.textContent=it.orig;
+    if(it.failed){
+      const n=document.createElement('div');n.className='orig';
+      n.textContent='⚠️ অনুবাদ হয়নি। নিচের বোতামে আবার চেষ্টা করুন।';
+      const rb=document.createElement('button');rb.className='mini';rb.textContent='🔁 আবার অনুবাদ';
+      rb.onclick=()=>retryItem(it);
+      d.append(w,tr,n,rb);
+    }else{
+      const sp=document.createElement('button');sp.className='mini';sp.textContent='🔊 শুনুন';
+      sp.onclick=()=>speak(it.tr,it.trLang||myLang(),it.voice);
+      const cp=document.createElement('button');cp.className='mini';cp.textContent='কপি';
+      cp.onclick=async()=>{try{await navigator.clipboard.writeText(it.tr);setStatus('কপি হয়েছে।')}catch(e){setStatus('কপি করা যায়নি।')}};
+      d.append(w,tr,...(it.orig!==it.tr?[og]:[]),sp,cp);
+    }
+    box.appendChild(d);
+  });
+  box.scrollTop=box.scrollHeight;
+}
+
+/* ================= মাইক্রোফোন: কথা শনাক্ত করে অনুবাদ ================= */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null;
+
+$('micBtn').onclick=()=>{
+  if(!SR){setStatus('এই ব্রাউজারে কণ্ঠ শনাক্তকরণ নেই। Chrome ব্যবহার করুন।');return;}
+  if(rec){rec.abort();return;}
+  if(!conn||!conn.open){setStatus('আগে সংযোগ করুন।');return;}
+  startMicMeter();
+  rec=new SR();
+  rec.lang=LOCALE[myLang()]||myLang();
+  rec.continuous=false;rec.interimResults=false;
+  $('micBtn').classList.add('active');$('micBtn').textContent='⏹️ থামান';
+  setStatus('শুনছি... এখন কথা বলুন।');
+  rec.onresult=e=>{
+    const t=e.results[0][0].transcript.trim();
+    const v=stopMicMeter();
+    if(v)lastVoice=v;
+    if(t)sendText(t,v);
+  };
+  rec.onerror=e=>{
+    const msgs={'not-allowed':'মাইক্রোফোনের অনুমতি দিন।','no-speech':'কোনো কথা শোনা যায়নি।','network':'ইন্টারনেট সংযোগ দিন।','audio-capture':'মাইক্রোফোন পাওয়া যায়নি।'};
+    if(msgs[e.error])setStatus(msgs[e.error]);
+  };
+  rec.onend=()=>{
+    stopMicMeter();
+    $('micBtn').classList.remove('active');
+    $('micBtn').textContent='🎙️ কথা বলুন (অনুবাদ)';
+    rec=null;
+  };
+  try{rec.start();}catch(err){setStatus('মাইক্রোফোন চালু করা যায়নি।');rec=null;stopMicMeter();}
+};
+
+$('sendBtn').onclick=()=>{
+  const t=$('typed').value.trim();
+  if(!t){setStatus('আগে কিছু লিখুন।');return;}
+  $('typed').value='';
+  sendText(t,null);
+};
+$('typed').addEventListener('keydown',e=>{if(e.key==='Enter')$('sendBtn').click();});
+
 /* ================= অডিও ও ভিডিও কল ================= */
 function mediaError(e){
   if(e&&e.name==='NotAllowedError')return 'মাইক্রোফোন/ক্যামেরার অনুমতি দিন।';
@@ -255,20 +533,34 @@ async function getMedia(video){
   });
 }
 
+function refreshCallTransBtn(){
+  $('callTransBtn').textContent=callTranslate?'🌐 কল অনুবাদ: চালু':'🌐 কল অনুবাদ: বন্ধ';
+  $('callTransBtn').disabled=!currentCall;
+}
+
 function showCallUI(on,video){
   $('callArea').classList.toggle('hidden',!on);
   $('localVideo').style.display=(on&&video)?'block':'none';
-  $('remoteVideo').style.minHeight=on&&!video?'0':'';
   setCallButtons(!!conn&&conn.open);
+  refreshCallTransBtn();
 }
 
 function bindCall(call){
   call.on('stream',s=>{
     $('remoteVideo').srcObject=s;
+    $('remoteVideo').muted=callTranslate;
     $('remoteVideo').play().catch(()=>{});
   });
   call.on('close',endCallLocal);
   call.on('error',endCallLocal);
+}
+
+function onCallStarted(){
+  if(!callMeter&&localStream){
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(AC)callMeter=new VoiceMeter(localStream);
+  }
+  if(callTranslate)startCallRecognition();
 }
 
 async function startCall(video){
@@ -281,6 +573,7 @@ async function startCall(video){
   currentCall=peer.call(conn.peer,localStream,{metadata:{video}});
   bindCall(currentCall);
   showCallUI(true,video);
+  onCallStarted();
   setStatus('কল করা হচ্ছে...');
 }
 
@@ -314,6 +607,7 @@ $('acceptBtn').onclick=async()=>{
   currentCall=call;pendingCall=null;
   bindCall(call);
   showCallUI(true,video);
+  onCallStarted();
   setStatus('কল যুক্ত হয়েছে।');
 };
 
@@ -325,10 +619,14 @@ $('declineBtn').onclick=()=>{
 };
 
 function endCallLocal(){
+  stopCallRecognition();
+  if(callMeter){callMeter.stop();callMeter=null;}
   if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null;}
   $('remoteVideo').srcObject=null;
+  $('remoteVideo').muted=false;
   $('localVideo').srcObject=null;
   currentCall=null;
+  callTranslate=false;
   $('muteBtn').textContent='🔇 মিউট';
   $('camBtn').textContent='📷 ক্যামেরা বন্ধ';
   showCallUI(false);
@@ -356,7 +654,59 @@ $('camBtn').onclick=()=>{
   $('camBtn').textContent=t.enabled?'📷 ক্যামেরা বন্ধ':'📷 ক্যামেরা চালু';
 };
 
-/* ================= বার্তা ও অনুবাদ ================= */
+/* ================= কল অনুবাদ মোড ================= */
+// এই মোডে মূল কণ্ঠ বন্ধ থাকে, আর প্রত্যেকে অপরের কথা নিজের ভাষায় ও বক্তার সুরে শোনে।
+function applyCallMode(on,broadcast){
+  callTranslate=on;
+  if(currentCall)$('remoteVideo').muted=on;
+  if(broadcast&&conn&&conn.open)conn.send({type:'callmode',on});
+  if(on&&currentCall)startCallRecognition();
+  else stopCallRecognition();
+  refreshCallTransBtn();
+  setStatus(on?'কল অনুবাদ চালু হয়েছে।':'কল অনুবাদ বন্ধ হয়েছে।');
+}
+
+$('callTransBtn').onclick=()=>{
+  if(!currentCall){setStatus('প্রথমে কল শুরু করুন।');return;}
+  applyCallMode(!callTranslate,true);
+};
+
+function startCallRecognition(){
+  if(!SR||!currentCall||!callTranslate)return;
+  callRec=new SR();
+  callRec.lang=LOCALE[myLang()]||myLang();
+  callRec.continuous=true;
+  callRec.interimResults=false;
+  callRec.onresult=e=>{
+    // অনুবাদিত কথা চলাকালীন নিজের মাইক্রোফোনে ধরা পড়া এড়াতে
+    if(window.speechSynthesis&&speechSynthesis.speaking)return;
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(!e.results[i].isFinal)continue;
+      const t=e.results[i][0].transcript.trim();
+      if(!t)continue;
+      const v=callMeter?callMeter.snapshot():null;
+      if(v)lastVoice=v;
+      sendText(t,v||lastVoice);
+    }
+  };
+  callRec.onerror=()=>{};
+  callRec.onend=()=>{
+    callRec=null;
+    if(callTranslate&&currentCall)setTimeout(startCallRecognition,400);
+  };
+  try{callRec.start();}catch(e){callRec=null;}
+}
+
+function stopCallRecognition(){
+  if(callRec){
+    const r=callRec;
+    callRec=null;
+    r.onend=null;
+    try{r.abort();}catch(e){}
+  }
+}
+
+/* ================= সংযোগের বার্তা গ্রহণ ================= */
 function onData(d){
   if(d.type==='hello'){
     peerLang=d.lang;
@@ -364,194 +714,11 @@ function onData(d){
     return;
   }
   if(d.type==='msg'){
-    receiveText(d.orig,d.origLang);
+    receiveText(d.orig,d.origLang,d.voice);
+    return;
   }
-}
-
-myLangSel.onchange=()=>{
-  if(conn&&conn.open)conn.send({type:'hello',lang:myLang()});
-};
-
-function chunkText(text,max=400){
-  const parts=text.match(/[^.!?।\n]+[.!?।\n]*/g)||[text];
-  const out=[];let cur='';
-  for(const p of parts){
-    if((cur+p).length>max){if(cur)out.push(cur.trim());cur=p;}
-    else cur+=p;
-  }
-  if(cur.trim())out.push(cur.trim());
-  return out.flatMap(s=>s.length>max?(s.match(new RegExp('.{1,'+max+'}','g'))||[s]):[s]);
-}
-
-async function googleTranslate(q,from,to){
-  const r=await fetch('https://translation.googleapis.com/language/translate/v2?key='+GOOGLE_KEY,{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({q,source:from,target:to,format:'text'})
-  });
-  if(!r.ok)throw new Error('google');
-  const d=await r.json();
-  return d.data.translations[0].translatedText;
-}
-
-async function myMemoryTranslate(q,from,to){
-  const url='https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair='+encodeURIComponent(from+'|'+to);
-  const r=await fetch(url);
-  if(!r.ok)throw new Error('network');
-  const d=await r.json();
-  const t=d?.responseData?.translatedText;
-  if(!t||/INVALID|QUERY LENGTH|MYMEMORY WARNING/i.test(t))throw new Error('limit');
-  return t;
-}
-
-// বিনামূল্যের Google endpoint (কী লাগে না) — ব্যাকআপ হিসেবে
-async function gtxTranslate(q,from,to){
-  const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl='+encodeURIComponent(from)+'&tl='+encodeURIComponent(to)+'&dt=t&q='+encodeURIComponent(q);
-  const r=await fetch(url);
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  const d=await r.json();
-  return d[0].map(x=>x[0]).join('');
-}
-
-async function translateChunk(q,from,to){
-  const errs=[];
-  if(GOOGLE_KEY){
-    try{return await googleTranslate(q,from,to);}catch(e){errs.push('Google:'+e.message);}
-  }
-  try{return await myMemoryTranslate(q,from,to);}catch(e){errs.push('MyMemory:'+e.message);}
-  try{return await gtxTranslate(q,from,to);}catch(e){errs.push('Backup:'+e.message);}
-  throw new Error(errs.join(' | '));
-}
-
-async function translate(text,from,to){
-  if(from===to)return text;
-  const res=[];
-  for(const c of chunkText(text))res.push(await translateChunk(c,from,to));
-  return res.join(' ');
-}
-
-function speak(text,lang){
-  if(!('speechSynthesis'in window)){setStatus('এই ডিভাইসে কণ্ঠে শোনার সুবিধা নেই।');return;}
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  const loc=LOCALE[lang]||lang;
-  u.lang=loc;
-  const voices=speechSynthesis.getVoices();
-  const v=voices.find(x=>x.lang===loc)||voices.find(x=>x.lang.startsWith(lang));
-  if(v)u.voice=v;
-  else if(voices.length)setStatus(langName(lang)+' ভাষার কণ্ঠ এই ফোনে নেই। Google Text-to-Speech ভাষা প্যাক ইনস্টল করুন।');
-  speechSynthesis.speak(u);
-}
-
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-let rec=null;
-
-$('micBtn').onclick=()=>{
-  if(!SR){setStatus('এই ব্রাউজারে কণ্ঠ শনাক্তকরণ নেই। Chrome ব্যবহার করুন।');return;}
-  if(rec){rec.abort();return;}
-  if(!conn||!conn.open){setStatus('আগে সংযোগ করুন।');return;}
-  rec=new SR();
-  rec.lang=LOCALE[myLang()]||myLang();
-  rec.continuous=false;rec.interimResults=false;
-  $('micBtn').classList.add('active');$('micBtn').textContent='⏹️ থামান';
-  setStatus('শুনছি... এখন কথা বলুন।');
-  rec.onresult=e=>{const t=e.results[0][0].transcript.trim();if(t)sendText(t);};
-  rec.onerror=e=>{
-    const msgs={'not-allowed':'মাইক্রোফোনের অনুমতি দিন।','no-speech':'কোনো কথা শোনা যায়নি।','network':'ইন্টারনেট সংযোগ দিন।','audio-capture':'মাইক্রোফোন পাওয়া যায়নি।'};
-    if(msgs[e.error])setStatus(msgs[e.error]);
-  };
-  rec.onend=()=>{
-    $('micBtn').classList.remove('active');
-    $('micBtn').textContent='🎙️ কথা বলুন (অনুবাদ)';
-    rec=null;
-  };
-  try{rec.start();}catch(err){setStatus('মাইক্রোফোন চালু করা যায়নি।');rec=null;}
-};
-
-$('sendBtn').onclick=()=>{
-  const t=$('typed').value.trim();
-  if(!t){setStatus('আগে কিছু লিখুন।');return;}
-  $('typed').value='';
-  sendText(t);
-};
-$('typed').addEventListener('keydown',e=>{if(e.key==='Enter')$('sendBtn').click();});
-
-async function sendText(text){
-  if(!conn||!conn.open){setStatus('আগে সংযোগ করুন।');return;}
-  const from=myLang();
-  conn.send({type:'msg',orig:text,origLang:from});
-  addBubble('me',text,text,from,from);
-  setStatus('পাঠানো হয়েছে। অপর ব্যক্তি নিজের ভাষায় শুনবেন।');
-}
-
-// অপর ফোন থেকে বার্তা এলে, এই ফোনের নির্বাচিত ভাষায় অনুবাদ করে শোনানো হয়।
-async function receiveText(orig,origLang){
-  const to=myLang();
-  const item={who:'them',orig,tr:orig,origLang,trLang:to};
-  chatItems.push(item);
-  renderChat();
-  let tr=orig;
-  if(origLang!==to){
-    setStatus('আপনার ভাষায় অনুবাদ করা হচ্ছে...');
-    try{
-      tr=await translate(orig,origLang,to);
-      setStatus('অনুবাদ সম্পন্ন।');
-    }catch(e){
-      item.failed=true;
-      renderChat();
-      setStatus('অনুবাদ হয়নি: '+e.message);
-      return;
-    }
-  }
-  item.tr=tr;
-  renderChat();
-  if($('autoSpeak').checked)speak(tr,to);
-}
-
-/* ================= চ্যাট ================= */
-function addBubble(who,orig,tr,origLang,trLang){
-  chatItems.push({who,orig,tr,origLang,trLang});
-  renderChat();
-}
-
-function renderChat(){
-  const box=$('chat');
-  box.innerHTML='';
-  if(!chatItems.length){box.innerHTML='<div class="empty">এখনও কোনো কথা নেই।</div>';return;}
-  chatItems.forEach(it=>{
-    const d=document.createElement('div');
-    d.className='bubble '+it.who;
-    const w=document.createElement('div');w.className='who';
-    w.textContent=(it.who==='me'?'আপনি':'অপর ব্যক্তি')+' · '+langName(it.origLang);
-    const tr=document.createElement('div');tr.className='tr';tr.textContent=it.tr;
-    const og=document.createElement('div');og.className='orig';og.textContent=it.orig;
-    const sp=document.createElement('button');sp.className='mini';sp.textContent='🔊 শুনুন';
-    sp.onclick=()=>speak(it.tr,it.trLang||myLang());
-    const cp=document.createElement('button');cp.className='mini';cp.textContent='কপি';
-    cp.onclick=async()=>{try{await navigator.clipboard.writeText(it.tr);setStatus('কপি হয়েছে।')}catch(e){setStatus('কপি করা যায়নি।')}};
-    if(it.failed){
-      const n=document.createElement('div');n.className='orig';
-      n.textContent='⚠️ অনুবাদ হয়নি। নিচের বোতামে আবার চেষ্টা করুন।';
-      const rb=document.createElement('button');rb.className='mini';rb.textContent='🔁 আবার অনুবাদ';
-      rb.onclick=()=>retryItem(it);
-      d.append(w,tr,n,rb);
-    }else{
-      d.append(w,tr,...(it.orig!==it.tr?[og]:[]),sp,cp);
-    }
-    box.appendChild(d);
-  });
-  box.scrollTop=box.scrollHeight;
-}
-
-async function retryItem(it){
-  setStatus('আবার অনুবাদ করা হচ্ছে...');
-  try{
-    it.tr=await translate(it.orig,it.origLang,it.trLang);
-    it.failed=false;
-    renderChat();
-    setStatus('অনুবাদ সম্পন্ন।');
-    if($('autoSpeak').checked)speak(it.tr,it.trLang);
-  }catch(e){
-    setStatus('অনুবাদ হয়নি: '+e.message);
+  if(d.type==='callmode'){
+    applyCallMode(!!d.on,false);
   }
 }
 
