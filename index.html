@@ -135,7 +135,7 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
   </div>
 </div>
 
-<footer>Ripon AI Translator · Version 7.0</footer>
+<footer>Ripon AI Translator · Version 8.0</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
@@ -560,11 +560,33 @@ function showCallUI(on,video){
   refreshCallTransBtn();
 }
 
+function watchCall(call){
+  const attach=()=>{
+    const pc=call.peerConnection;
+    if(!pc||pc._watched)return;
+    pc._watched=true;
+    pc.addEventListener('iceconnectionstatechange',()=>{
+      const s=pc.iceConnectionState;
+      if(s==='connected'||s==='completed')setStatus('কলের সংযোগ তৈরি হয়েছে।');
+      if(s==='failed')setStatus('কলের সংযোগ ব্যর্থ। দুই ফোনেই মোবাইল ডেটা বা অন্য Wi-Fi দিয়ে চেষ্টা করুন।');
+    });
+  };
+  attach();
+  setTimeout(attach,500);
+  call._t=setTimeout(()=>{
+    if(currentCall===call&&!$('remoteVideo').srcObject)
+      setStatus('কল সংযুক্ত হয়নি। দুই ফোনেই মোবাইল ডেটা বা অন্য Wi-Fi দিয়ে চেষ্টা করুন।');
+  },20000);
+}
+
 function bindCall(call){
+  watchCall(call);
   call.on('stream',s=>{
+    clearTimeout(call._t);
     $('remoteVideo').srcObject=s;
     $('remoteVideo').muted=callTranslate&&callRecOn;
-    $('remoteVideo').play().catch(()=>{});
+    setStatus('অপর জনের কণ্ঠ আসছে।');
+    $('remoteVideo').play().catch(()=>setStatus('কণ্ঠ চালু হচ্ছে না। স্ক্রিনে একবার ট্যাপ করুন।'));
   });
   call.on('close',endCallLocal);
   call.on('error',endCallLocal);
