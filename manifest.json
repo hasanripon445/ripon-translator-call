@@ -1,0 +1,14 @@
+{
+  "name": "Ripon AI Translator",
+  "short_name": "Ripon Translator",
+  "description": "দুজন মানুষ নিজের ভাষায় কথা বলবেন ও শুনবেন",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f2f6fa",
+  "theme_color": "#102b46",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
