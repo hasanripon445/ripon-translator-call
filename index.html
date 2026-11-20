@@ -135,7 +135,7 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
   </div>
 </div>
 
-<footer>Ripon AI Translator · Version 5.0</footer>
+<footer>Ripon AI Translator · Version 7.0</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
@@ -169,6 +169,7 @@ let peer=null, conn=null, peerLang='', chatItems=[];
 let localStream=null, currentCall=null, pendingCall=null;
 let callTranslate=false, callRec=null, callMeter=null;
 let micMeter=null, micStream=null, lastVoice=null;
+let callRecOn=false; // কল অনুবাদ সত্যিই শুনছে কিনা
 
 /* ================= কণ্ঠের সুর মাপা ================= */
 // একটি অডিও নমুনা থেকে মৌলিক সুর (F0, Hz) অনুমান
@@ -562,7 +563,7 @@ function showCallUI(on,video){
 function bindCall(call){
   call.on('stream',s=>{
     $('remoteVideo').srcObject=s;
-    $('remoteVideo').muted=callTranslate;
+    $('remoteVideo').muted=callTranslate&&callRecOn;
     $('remoteVideo').play().catch(()=>{});
   });
   call.on('close',endCallLocal);
@@ -673,7 +674,7 @@ $('camBtn').onclick=()=>{
 // এই মোডে মূল কণ্ঠ বন্ধ থাকে, আর প্রত্যেকে অপরের কথা নিজের ভাষায় ও বক্তার সুরে শোনে।
 function applyCallMode(on,broadcast){
   callTranslate=on;
-  if(currentCall)$('remoteVideo').muted=on;
+  if(currentCall)$('remoteVideo').muted=on&&callRecOn;
   if(broadcast&&conn&&conn.open)conn.send({type:'callmode',on});
   if(on&&currentCall)startCallRecognition();
   else stopCallRecognition();
@@ -692,6 +693,11 @@ function startCallRecognition(){
   callRec.lang=LOCALE[myLang()]||myLang();
   callRec.continuous=true;
   callRec.interimResults=false;
+  callRec.onstart=()=>{
+    callRecOn=true;
+    if(currentCall)$('remoteVideo').muted=callTranslate;
+    setStatus('কল অনুবাদ চালু। এখন কথা বলুন।');
+  };
   callRec.onresult=e=>{
     // অনুবাদিত কথা চলাকালীন নিজের মাইক্রোফোনে ধরা পড়া এড়াতে
     if(window.speechSynthesis&&speechSynthesis.speaking)return;
@@ -705,21 +711,24 @@ function startCallRecognition(){
     }
   };
   callRec.onerror=e=>{
-    if(e.error==='not-allowed'||e.error==='audio-capture'){
-      callTranslate=false;
-      stopCallRecognition();
-      refreshCallTransBtn();
-      setStatus('কল অনুবাদের জন্য মাইক্রোফোন অনুমতি ও একটি মাইক্রোফোন লাগবে।');
+    if(e.error==='not-allowed'||e.error==='audio-capture'||e.error==='service-not-allowed'){
+      applyCallMode(false,true);
+      setStatus('কল অনুবাদ চালু হয়নি ('+e.error+')। সাধারণ কল চলছে। ফোনের মাইক্রোফোন অনুমতি ও কথা শনাক্তকরণ দেখুন।');
+    }else if(e.error&&e.error!=='aborted'&&e.error!=='no-speech'){
+      setStatus('কল অনুবাদে সমস্যা: '+e.error+'। আবার চেষ্টা হচ্ছে...');
     }
   };
   callRec.onend=()=>{
     callRec=null;
+    callRecOn=false;
+    if(currentCall)$('remoteVideo').muted=false;
     if(callTranslate&&currentCall)setTimeout(startCallRecognition,400);
   };
   try{callRec.start();}catch(e){callRec=null;}
 }
 
 function stopCallRecognition(){
+  callRecOn=false;
   if(callRec){
     const r=callRec;
     callRec=null;
