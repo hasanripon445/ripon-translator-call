@@ -53,7 +53,7 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
 <body>
 <header>
   <h1>🎧 Ripon AI Translator</h1>
-  <div class="sub">প্রত্যেকে নিজের ভাষায় কথা বলুন, অপর জন নিজের ভাষায় ও বক্তার সুরে শুনুন।</div>
+  <div class="sub">কল করুন বা কথা বলুন, প্রত্যেকে নিজের ভাষায় ও নিজের সুরে শুনুন।</div>
 </header>
 <main>
 
@@ -92,9 +92,9 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
         <button class="btn danger" id="endBtn">❌ কল শেষ</button>
       </div>
       <div class="row">
-        <button class="btn secondary" id="origBtn">🔈 মূল কণ্ঠ চালু</button>
+        <button class="btn secondary" id="callTransBtn" disabled>🌐 কল অনুবাদ: বন্ধ</button>
       </div>
-      <p class="note" style="margin:8px 0 0">কলে কথা বলতে নিচের 🎙️ বোতাম চাপুন। আপনার কথা অপর জন নিজের ভাষায় শুনবেন। মূল কণ্ঠ ডিফল্টভাবে বন্ধ থাকে।</p>
+      <p class="note" style="margin:8px 0 0">কল অনুবাদ চালু হলে মূল কণ্ঠ বন্ধ থাকবে এবং অপর জন আপনার সুরে অনুবাদিত কথা শুনবেন। ইয়ারফোন ব্যবহার করুন, নাহলে নিজের শোনা কথা আবার ধরা পড়তে পারে।</p>
     </div>
   </section>
 
@@ -113,18 +113,15 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
   <section class="card">
     <div class="row" style="margin:0 0 10px;align-items:center;justify-content:space-between">
       <b style="font-size:14px">কথোপকথন</b>
-      <span>
-        <button class="mini" id="unlockBtn" style="width:auto">🔊 কণ্ঠ চালু</button>
-        <button class="mini" id="clearChat" style="width:auto">সব মুছুন</button>
-      </span>
+      <button class="mini" id="clearChat" style="width:auto;flex:0 0 auto">সব মুছুন</button>
     </div>
     <div class="chat" id="chat"><div class="empty">এখনও কোনো কথা নেই।</div></div>
   </section>
 
   <section class="card">
     <b style="font-size:14px">ব্যবহারের নিয়ম</b>
-    <p class="note">১. একজন রুম তৈরি করে কোড দিন, অন্যজন কোড লিখে যুক্ত হোন। ২. দুজনেই নিজের ভাষা বাছুন। ৩. কথা বলতে 🎙️ বোতাম চাপুন। ৪. প্রথমবার স্ক্রিনে একবার ট্যাপ করুন, যাতে কণ্ঠ শোনানো শুরু হয়।</p>
-    <p class="note">অনুবাদ সংযোগের মাধ্যমে যায়, তাই কলের ভয়েস না এলেও অনুবাদ পৌঁছাবে। কলে ইয়ারফোন ব্যবহার করুন।</p>
+    <p class="note">১. একজন রুম তৈরি করে কোড দিন, অন্যজন কোড লিখে যুক্ত হোন। ২. দুজনেই নিজের ভাষা বাছুন। ৩. চ্যাটে বা কলে কথা বললে অপর জন আপনার সুর অনুযায়ী অনুবাদ শুনবেন।</p>
+    <p class="note">সুর মাপতে মাইক্রোফোন ব্যবহার হয়। কিছু ফোনে কথা শনাক্তকরণ ও মাইক্রোফোন একসাথে চললে সমস্যা হতে পারে। সেক্ষেত্রে একবারে একটি মাধ্যম ব্যবহার করুন।</p>
   </section>
 </main>
 
@@ -138,7 +135,7 @@ footer{text-align:center;color:#718397;font-size:11px;padding:12px}
   </div>
 </div>
 
-<footer>Ripon AI Translator · Version 9.0</footer>
+<footer>Ripon AI Translator · Version 5.0</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
@@ -159,7 +156,7 @@ const LOCALE={bn:'bn-BD',en:'en-US',hi:'hi-IN',ur:'ur-PK',ar:'ar-SA',zh:'zh-CN',
 const SCRIPT_RE={bn:/[\u0980-\u09FF]/,hi:/[\u0900-\u097F]/,ne:/[\u0900-\u097F]/,ur:/[\u0600-\u06FF]/,ar:/[\u0600-\u06FF]/,fa:/[\u0600-\u06FF]/,he:/[\u0590-\u05FF]/,zh:/[\u4E00-\u9FFF]/,ja:/[\u3040-\u30FF\u4E00-\u9FFF]/,ko:/[\uAC00-\uD7AF]/,ru:/[\u0400-\u04FF]/,uk:/[\u0400-\u04FF]/,th:/[\u0E00-\u0E7F]/,ml:/[\u0D00-\u0D7F]/,ta:/[\u0B80-\u0BFF]/,te:/[\u0C00-\u0C7F]/,gu:/[\u0A80-\u0AFF]/,pa:/[\u0A00-\u0A7F]/,my:/[\u1000-\u109F]/};
 const looksRight=(text,to)=>{const re=SCRIPT_RE[to];return !re||re.test(text);};
 
-/* ================= সাহায্যকারী ================= */
+/* ================= ছোট সাহায্যকারী ================= */
 const $=id=>document.getElementById(id);
 const setStatus=t=>$('statusBox').textContent=t;
 const myLangSel=$('myLang');
@@ -170,10 +167,11 @@ const langName=code=>{const f=LANGS.find(l=>l[1]===code);return f?f[0]:code;};
 
 let peer=null, conn=null, peerLang='', chatItems=[];
 let localStream=null, currentCall=null, pendingCall=null;
-let callMeter=null, micMeter=null, micStream=null, lastVoice=null;
-let callMuteOrig=true; // কলে মূল কণ্ঠ বন্ধ থাকবে কিনা
+let callTranslate=false, callRec=null, callMeter=null;
+let micMeter=null, micStream=null, lastVoice=null;
 
 /* ================= কণ্ঠের সুর মাপা ================= */
+// একটি অডিও নমুনা থেকে মৌলিক সুর (F0, Hz) অনুমান
 function detectPitch(buf,sr){
   let rms=0;
   for(const v of buf)rms+=v*v;
@@ -219,7 +217,7 @@ class VoiceMeter{
 }
 
 function startMicMeter(){
-  if(currentCall)return; // কলে কলের মাইক্রোফোনের সুর ব্যবহার হবে
+  if(currentCall)return; // কল চললে কলের মাইক্রোফোনই ব্যবহার হবে
   navigator.mediaDevices.getUserMedia({audio:true})
     .then(s=>{micStream=s;micMeter=new VoiceMeter(s);})
     .catch(()=>{micMeter=null;});
@@ -232,7 +230,7 @@ function stopMicMeter(){
   return v;
 }
 
-/* ================= সংযোগ ================= */
+/* ================= লিঙ্ক ও সংযোগ ================= */
 const CODE_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const randomCode=()=>Array.from({length:6},()=>CODE_CHARS[Math.floor(Math.random()*CODE_CHARS.length)]).join('');
 const PREFIX='ripon-tr-';
@@ -373,7 +371,7 @@ async function translate(text,from,to){
   return res.join(' ');
 }
 
-/* ================= কণ্ঠে শোনানো ================= */
+/* ================= কণ্ঠে শোনানো (সুর ও লিঙ্গ অনুযায়ী) ================= */
 const genderOf=name=>{
   if(/female|woman|girl/i.test(name))return 'female';
   if(/\bmale\b|\bman\b|\bboy\b/i.test(name))return 'male';
@@ -393,25 +391,14 @@ function speak(text,lang,voice){
   v=v||langVoices[0]||null;
   if(v)u.voice=v;
   else if(voices.length)setStatus(langName(lang)+' ভাষার কণ্ঠ এই ফোনে নেই। Google Text-to-Speech ভাষা প্যাক ইনস্টল করুন।');
-  if(voice&&voice.f0)u.pitch=Math.min(2,Math.max(0.5,0.8+(voice.f0-80)*0.6/170));
-  u.onerror=e=>{
-    if(e.error==='not-allowed'||e.error==='not_allowed')setStatus('শোনানোর জন্য স্ক্রিনে একবার ট্যাপ করুন, তারপর আবার চেষ্টা করুন।');
-  };
+  // বক্তার সুর অনুযায়ী পিচ: পুরুষের কণ্ঠ নিচু, মহিলার কণ্ঠ উঁচু
+  if(voice&&voice.f0){
+    u.pitch=Math.min(2,Math.max(0.5,0.8+(voice.f0-80)*0.6/170));
+  }
   speechSynthesis.speak(u);
 }
 
-// Chrome মোবাইলে প্রথম স্পর্শের পর কণ্ঠ চালু হয়
-function unlockSpeech(){
-  if(!('speechSynthesis'in window))return;
-  window.__speechUnlocked=true;
-  const u=new SpeechSynthesisUtterance(' ');
-  u.volume=0;
-  speechSynthesis.speak(u);
-  setStatus('কণ্ঠ চালু হয়েছে। এখন অপর ব্যক্তির কথা নিজের ভাষায় শোনা যাবে।');
-}
-document.addEventListener('pointerdown',()=>{if(!window.__speechUnlocked)unlockSpeech();},{passive:true});
-
-/* ================= বার্তা ================= */
+/* ================= চ্যাটের বার্তা ================= */
 function addBubble(item){
   chatItems.push(item);
   renderChat();
@@ -491,7 +478,7 @@ function renderChat(){
   box.scrollTop=box.scrollHeight;
 }
 
-/* ================= মাইক্রোফোন: চ্যাটে ও কলে একই বোতাম ================= */
+/* ================= মাইক্রোফোন: কথা শনাক্ত করে অনুবাদ ================= */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let rec=null;
 
@@ -507,17 +494,16 @@ $('micBtn').onclick=()=>{
   setStatus('শুনছি... এখন কথা বলুন।');
   rec.onresult=e=>{
     const t=e.results[0][0].transcript.trim();
-    // কলে কলের মাইক্রোফোনের সুর, চ্যাটে আলাদা মাইক্রোফোনের সুর
-    const v=currentCall?(callMeter?callMeter.snapshot():null):stopMicMeter();
+    const v=stopMicMeter();
     if(v)lastVoice=v;
     if(t)sendText(t,v);
   };
   rec.onerror=e=>{
     const msgs={'not-allowed':'মাইক্রোফোনের অনুমতি দিন।','no-speech':'কোনো কথা শোনা যায়নি।','network':'ইন্টারনেট সংযোগ দিন।','audio-capture':'মাইক্রোফোন পাওয়া যায়নি।'};
-    setStatus(msgs[e.error]||('শনাক্তকরণে সমস্যা: '+e.error));
+    if(msgs[e.error])setStatus(msgs[e.error]);
   };
   rec.onend=()=>{
-    if(!currentCall)stopMicMeter();
+    stopMicMeter();
     $('micBtn').classList.remove('active');
     $('micBtn').textContent='🎙️ কথা বলুন (অনুবাদ)';
     rec=null;
@@ -533,7 +519,7 @@ $('sendBtn').onclick=()=>{
 };
 $('typed').addEventListener('keydown',e=>{if(e.key==='Enter')$('sendBtn').click();});
 
-/* ================= কল ================= */
+/* ================= অডিও ও ভিডিও কল ================= */
 function mediaError(e){
   if(e&&e.name==='NotAllowedError')return 'মাইক্রোফোন/ক্যামেরার অনুমতি দিন।';
   if(e&&e.name==='NotFoundError')return 'মাইক্রোফোন বা ক্যামেরা পাওয়া যায়নি।';
@@ -547,39 +533,23 @@ async function getMedia(video){
   });
 }
 
-function refreshOrigBtn(){
-  $('origBtn').textContent=callMuteOrig?'🔈 মূল কণ্ঠ চালু':'🔇 মূল কণ্ঠ বন্ধ';
-  if(currentCall)$('remoteVideo').muted=callMuteOrig;
+function refreshCallTransBtn(){
+  $('callTransBtn').textContent=callTranslate?'🌐 কল অনুবাদ: চালু':'🌐 কল অনুবাদ: বন্ধ';
+  $('callTransBtn').disabled=!currentCall;
 }
 
 function showCallUI(on,video){
   $('callArea').classList.toggle('hidden',!on);
   $('localVideo').style.display=(on&&video)?'block':'none';
   setCallButtons(!!conn&&conn.open);
-  refreshOrigBtn();
-}
-
-function watchCall(call){
-  const attach=()=>{
-    const pc=call.peerConnection;
-    if(!pc||pc._watched)return;
-    pc._watched=true;
-    pc.addEventListener('iceconnectionstatechange',()=>{
-      const s=pc.iceConnectionState;
-      if(s==='connected'||s==='completed')setStatus('কলের সংযোগ তৈরি হয়েছে।');
-      if(s==='failed')setStatus('কলের মিডিয়া সংযোগ ব্যর্থ। অনুবাদ তবু চ্যাটের মাধ্যমে যাবে।');
-    });
-  };
-  attach();
-  setTimeout(attach,500);
+  refreshCallTransBtn();
 }
 
 function bindCall(call){
-  watchCall(call);
   call.on('stream',s=>{
     $('remoteVideo').srcObject=s;
-    $('remoteVideo').muted=callMuteOrig;
-    $('remoteVideo').play().catch(()=>setStatus('কণ্ঠ চালু হচ্ছে না। স্ক্রিনে একবার ট্যাপ করুন।'));
+    $('remoteVideo').muted=callTranslate;
+    $('remoteVideo').play().catch(()=>{});
   });
   call.on('close',endCallLocal);
   call.on('error',endCallLocal);
@@ -590,9 +560,7 @@ function onCallStarted(){
     const AC=window.AudioContext||window.webkitAudioContext;
     if(AC)callMeter=new VoiceMeter(localStream);
   }
-  callMuteOrig=true;
-  refreshOrigBtn();
-  setStatus('কল চলছে। কথা বলতে 🎙️ বোতাম চাপুন, অপর জন আপনার ভাষায় শুনবেন।');
+  if(callTranslate)startCallRecognition();
 }
 
 async function startCall(video){
@@ -640,6 +608,7 @@ $('acceptBtn').onclick=async()=>{
   bindCall(call);
   showCallUI(true,video);
   onCallStarted();
+  setStatus('কল যুক্ত হয়েছে।');
 };
 
 $('declineBtn').onclick=()=>{
@@ -650,12 +619,14 @@ $('declineBtn').onclick=()=>{
 };
 
 function endCallLocal(){
+  stopCallRecognition();
   if(callMeter){callMeter.stop();callMeter=null;}
   if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null;}
   $('remoteVideo').srcObject=null;
   $('remoteVideo').muted=false;
   $('localVideo').srcObject=null;
   currentCall=null;
+  callTranslate=false;
   $('muteBtn').textContent='🔇 মিউট';
   $('camBtn').textContent='📷 ক্যামেরা বন্ধ';
   showCallUI(false);
@@ -683,13 +654,59 @@ $('camBtn').onclick=()=>{
   $('camBtn').textContent=t.enabled?'📷 ক্যামেরা বন্ধ':'📷 ক্যামেরা চালু';
 };
 
-$('origBtn').onclick=()=>{
+/* ================= কল অনুবাদ মোড ================= */
+// এই মোডে মূল কণ্ঠ বন্ধ থাকে, আর প্রত্যেকে অপরের কথা নিজের ভাষায় ও বক্তার সুরে শোনে।
+function applyCallMode(on,broadcast){
+  callTranslate=on;
+  if(currentCall)$('remoteVideo').muted=on;
+  if(broadcast&&conn&&conn.open)conn.send({type:'callmode',on});
+  if(on&&currentCall)startCallRecognition();
+  else stopCallRecognition();
+  refreshCallTransBtn();
+  setStatus(on?'কল অনুবাদ চালু হয়েছে।':'কল অনুবাদ বন্ধ হয়েছে।');
+}
+
+$('callTransBtn').onclick=()=>{
   if(!currentCall){setStatus('প্রথমে কল শুরু করুন।');return;}
-  callMuteOrig=!callMuteOrig;
-  refreshOrigBtn();
+  applyCallMode(!callTranslate,true);
 };
 
-/* ================= সংযোগের বার্তা ================= */
+function startCallRecognition(){
+  if(!SR||!currentCall||!callTranslate)return;
+  callRec=new SR();
+  callRec.lang=LOCALE[myLang()]||myLang();
+  callRec.continuous=true;
+  callRec.interimResults=false;
+  callRec.onresult=e=>{
+    // অনুবাদিত কথা চলাকালীন নিজের মাইক্রোফোনে ধরা পড়া এড়াতে
+    if(window.speechSynthesis&&speechSynthesis.speaking)return;
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(!e.results[i].isFinal)continue;
+      const t=e.results[i][0].transcript.trim();
+      if(!t)continue;
+      const v=callMeter?callMeter.snapshot():null;
+      if(v)lastVoice=v;
+      sendText(t,v||lastVoice);
+    }
+  };
+  callRec.onerror=()=>{};
+  callRec.onend=()=>{
+    callRec=null;
+    if(callTranslate&&currentCall)setTimeout(startCallRecognition,400);
+  };
+  try{callRec.start();}catch(e){callRec=null;}
+}
+
+function stopCallRecognition(){
+  if(callRec){
+    const r=callRec;
+    callRec=null;
+    r.onend=null;
+    try{r.abort();}catch(e){}
+  }
+}
+
+/* ================= সংযোগের বার্তা গ্রহণ ================= */
 function onData(d){
   if(d.type==='hello'){
     peerLang=d.lang;
@@ -698,11 +715,14 @@ function onData(d){
   }
   if(d.type==='msg'){
     receiveText(d.orig,d.origLang,d.voice);
+    return;
+  }
+  if(d.type==='callmode'){
+    applyCallMode(!!d.on,false);
   }
 }
 
 $('clearChat').onclick=()=>{chatItems=[];renderChat();setStatus('কথোপকথন মুছে ফেলা হয়েছে।');};
-$('unlockBtn').onclick=()=>{window.__speechUnlocked=true;unlockSpeech();};
 </script>
 </body>
 </html>
