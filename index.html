@@ -403,12 +403,29 @@ async function myMemoryTranslate(q,from,to){
   return t;
 }
 
+// বিনামূল্যের Google endpoint (কী লাগে না) — ব্যাকআপ হিসেবে
+async function gtxTranslate(q,from,to){
+  const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl='+encodeURIComponent(from)+'&tl='+encodeURIComponent(to)+'&dt=t&q='+encodeURIComponent(q);
+  const r=await fetch(url);
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const d=await r.json();
+  return d[0].map(x=>x[0]).join('');
+}
+
+async function translateChunk(q,from,to){
+  const errs=[];
+  if(GOOGLE_KEY){
+    try{return await googleTranslate(q,from,to);}catch(e){errs.push('Google:'+e.message);}
+  }
+  try{return await myMemoryTranslate(q,from,to);}catch(e){errs.push('MyMemory:'+e.message);}
+  try{return await gtxTranslate(q,from,to);}catch(e){errs.push('Backup:'+e.message);}
+  throw new Error(errs.join(' | '));
+}
+
 async function translate(text,from,to){
   if(from===to)return text;
   const res=[];
-  for(const c of chunkText(text)){
-    res.push(GOOGLE_KEY?await googleTranslate(c,from,to):await myMemoryTranslate(c,from,to));
-  }
+  for(const c of chunkText(text))res.push(await translateChunk(c,from,to));
   return res.join(' ');
 }
 
@@ -479,7 +496,9 @@ async function receiveText(orig,origLang){
       tr=await translate(orig,origLang,to);
       setStatus('অনুবাদ সম্পন্ন।');
     }catch(e){
-      setStatus('অনুবাদ পাওয়া যায়নি। ইন্টারনেট সংযোগ দেখুন।');
+      item.failed=true;
+      renderChat();
+      setStatus('অনুবাদ হয়নি: '+e.message);
       return;
     }
   }
@@ -509,10 +528,31 @@ function renderChat(){
     sp.onclick=()=>speak(it.tr,it.trLang||myLang());
     const cp=document.createElement('button');cp.className='mini';cp.textContent='কপি';
     cp.onclick=async()=>{try{await navigator.clipboard.writeText(it.tr);setStatus('কপি হয়েছে।')}catch(e){setStatus('কপি করা যায়নি।')}};
-    d.append(w,tr,...(it.orig!==it.tr?[og]:[]),sp,cp);
+    if(it.failed){
+      const n=document.createElement('div');n.className='orig';
+      n.textContent='⚠️ অনুবাদ হয়নি। নিচের বোতামে আবার চেষ্টা করুন।';
+      const rb=document.createElement('button');rb.className='mini';rb.textContent='🔁 আবার অনুবাদ';
+      rb.onclick=()=>retryItem(it);
+      d.append(w,tr,n,rb);
+    }else{
+      d.append(w,tr,...(it.orig!==it.tr?[og]:[]),sp,cp);
+    }
     box.appendChild(d);
   });
   box.scrollTop=box.scrollHeight;
+}
+
+async function retryItem(it){
+  setStatus('আবার অনুবাদ করা হচ্ছে...');
+  try{
+    it.tr=await translate(it.orig,it.origLang,it.trLang);
+    it.failed=false;
+    renderChat();
+    setStatus('অনুবাদ সম্পন্ন।');
+    if($('autoSpeak').checked)speak(it.tr,it.trLang);
+  }catch(e){
+    setStatus('অনুবাদ হয়নি: '+e.message);
+  }
 }
 
 $('clearChat').onclick=()=>{chatItems=[];renderChat();setStatus('কথোপকথন মুছে ফেলা হয়েছে।');};
