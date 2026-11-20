@@ -364,8 +364,7 @@ function onData(d){
     return;
   }
   if(d.type==='msg'){
-    addBubble('them',d.orig,d.tr,d.origLang,myLang());
-    if($('autoSpeak').checked)speak(d.tr,myLang());
+    receiveText(d.orig,d.origLang);
   }
 }
 
@@ -462,18 +461,31 @@ $('typed').addEventListener('keydown',e=>{if(e.key==='Enter')$('sendBtn').click(
 async function sendText(text){
   if(!conn||!conn.open){setStatus('আগে সংযোগ করুন।');return;}
   const from=myLang();
-  const to=peerLang||from;
-  setStatus('অনুবাদ করা হচ্ছে...');
-  let tr;
-  try{
-    tr=await translate(text,from,to);
-    setStatus('পাঠানো হয়েছে।');
-  }catch(e){
-    tr=text;
-    setStatus('অনুবাদ পাওয়া যায়নি, মূল লেখা পাঠানো হয়েছে।');
+  conn.send({type:'msg',orig:text,origLang:from});
+  addBubble('me',text,text,from,from);
+  setStatus('পাঠানো হয়েছে। অপর ব্যক্তি নিজের ভাষায় শুনবেন।');
+}
+
+// অপর ফোন থেকে বার্তা এলে, এই ফোনের নির্বাচিত ভাষায় অনুবাদ করে শোনানো হয়।
+async function receiveText(orig,origLang){
+  const to=myLang();
+  const item={who:'them',orig,tr:orig,origLang,trLang:to};
+  chatItems.push(item);
+  renderChat();
+  let tr=orig;
+  if(origLang!==to){
+    setStatus('আপনার ভাষায় অনুবাদ করা হচ্ছে...');
+    try{
+      tr=await translate(orig,origLang,to);
+      setStatus('অনুবাদ সম্পন্ন।');
+    }catch(e){
+      setStatus('অনুবাদ পাওয়া যায়নি। ইন্টারনেট সংযোগ দেখুন।');
+      return;
+    }
   }
-  conn.send({type:'msg',orig:text,origLang:from,tr,trLang:to});
-  addBubble('me',text,tr,from,to);
+  item.tr=tr;
+  renderChat();
+  if($('autoSpeak').checked)speak(tr,to);
 }
 
 /* ================= চ্যাট ================= */
@@ -497,7 +509,7 @@ function renderChat(){
     sp.onclick=()=>speak(it.tr,it.trLang||myLang());
     const cp=document.createElement('button');cp.className='mini';cp.textContent='কপি';
     cp.onclick=async()=>{try{await navigator.clipboard.writeText(it.tr);setStatus('কপি হয়েছে।')}catch(e){setStatus('কপি করা যায়নি।')}};
-    d.append(w,tr,og,sp,cp);
+    d.append(w,tr,...(it.orig!==it.tr?[og]:[]),sp,cp);
     box.appendChild(d);
   });
   box.scrollTop=box.scrollHeight;
